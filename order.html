@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>دار العود | تأكيد الطلب</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>دار العود</h1>
+  <p>فخامة وهدوء</p>
+</header>
+
+<div class="container">
+  <div class="product">
+    <h3 id="pname"></h3>
+    <p>السعر: <span id="pprice"></span> د.ك</p>
+
+    <input
+      id="custName"
+      type="text"
+      placeholder="الاسم الكامل"
+      style="width:100%;padding:10px;margin-top:10px"
+    >
+
+    <input
+      id="custPhone"
+      type="tel"
+      placeholder="رقم الهاتف"
+      style="width:100%;padding:10px;margin-top:10px"
+    >
+
+    <a
+      id="wa"
+      class="btn"
+      style="margin-top:15px"
+    >
+      تأكيد الطلب عبر واتساب
+    </a>
+  </div>
+</div>
+
+<div class="footer">
+  <p>© 2026 دار العود – الموقع وسيط بيع للبخور والعود</p>
+  <a
+    href="policy.html"
+    style="color:#777;text-decoration:none;display:block;margin-top:8px"
+  >
+    سياسة الاستخدام والتواصل
+  </a>
+</div>
+
+<script>
+  // جلب اسم المنتج والسعر من الرابط
+  const q = new URLSearchParams(window.location.search);
+  const name = q.get('name');
+  const price = q.get('price');
+
+  // عرض البيانات
+  document.getElementById('pname').innerText = name;
+  document.getElementById('pprice').innerText = price;
+
+  // عند الضغط على زر التأكيد
+  document.getElementById('wa').onclick = () => {
+    const n = document.getElementById('custName').value;
+    const p = document.getElementById('custPhone').value;
+
+    // إرسال الطلب للسيرفر
+    fetch("http://127.0.0.1:5000/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        product: name,
+        price: price,
+        customer: n,
+        phone: p
+      })
+    }).then(() => {
+      // فتح واتساب بعد التسجيل
+      window.location.href =
+        `https://wa.me/96596615769?text=طلب من دار العود: ${name} - السعر ${price} د.ك | الاسم: ${n} | الهاتف: ${p}`;
+    });
+  };
+</script>
+
+</body>
+</html>
